@@ -20,8 +20,15 @@ def setup_colab():
     
     # 3. Baixar arquivos do GitHub
     print("📥 Baixando arquivos...")
-    os.system("wget -q https://raw.githubusercontent.com/SEU_USUARIO/open-dubbing-ui/main/app.py")
-    os.system("wget -q https://raw.githubusercontent.com/SEU_USUARIO/open-dubbing-ui/main/utils.py")
+    result1 = os.system("wget -q https://raw.githubusercontent.com/ssousa455/opendubcolab/main/app.py")
+    result2 = os.system("wget -q https://raw.githubusercontent.com/ssousa455/opendubcolab/main/utils.py")
+
+    if result1 != 0 or result2 != 0:
+        print("❌ Erro ao baixar arquivos do GitHub")
+        sys.exit(1)
+    else:
+        print("✅ Arquivos baixados com sucesso")
+    
     
     # 4. Configurar GPU
     print("🎮 Configurando GPU...")
