@@ -52,9 +52,13 @@ def setup_colab():
     print("🎬 Iniciando aplicação e expondo com ngrok...")
     from pyngrok import ngrok
     
-    # Autenticar ngrok (substitua YOUR_AUTHTOKEN pelo seu token)
-    ngrok.set_auth_token("2fm0nluHNQds8qlxIzZfpJJug1v_68Lbc6jBvcgTSjcD7qHHL") 
-    
+    # Autenticar ngrok usando variável de ambiente
+    ngrok_auth_token = os.environ.get("NGROK_AUTH_TOKEN")
+    if ngrok_auth_token:
+        ngrok.set_auth_token(ngrok_auth_token)
+    else:
+        print("⚠️ NGROK_AUTH_TOKEN não definida. O túnel ngrok pode não funcionar.")
+
     # Iniciar túnel ngrok para a porta 7860
     public_url = ngrok.connect(7860)
     print(f"🔗 Gradio URL: {public_url}")
