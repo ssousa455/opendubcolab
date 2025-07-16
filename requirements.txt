@@ -1,0 +1,12 @@
+# Core
+gradio>=4.0.0
+torch>=2.0.0
+torchvision
+torchaudio
+
+# Open-Dubbing
+open-dubbing
+
+# Sistema
+psutil
+pathlib
