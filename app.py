@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 # Configurações globais
 MAX_FILE_SIZE = 500 * 1024 * 1024  # 500MB
-SUPPORTED_FORMATS = ['.mp4', '.avi', '.mov', '.mkv', '.wmv', '.flv', '.webm']
+SUPPORTED_FORMATS = [".mp4", ".avi", ".mov", ".mkv", ".wmv", ".flv", ".webm"]
 
 class OpenDubbingApp:
     def __init__(self):
@@ -32,8 +32,11 @@ class OpenDubbingApp:
             os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
             logger.info(f"GPU detectada: {torch.cuda.get_device_name(0)}")
             logger.info(f"Memória GPU: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+            # Forçar o uso da GPU no ambiente, se disponível
+            os.environ["SONITR_DEVICE"] = "cuda"
         else:
             logger.warning("GPU não disponível, usando CPU")
+            os.environ["SONITR_DEVICE"] = "cpu"
             
     def validate_inputs(self, video_file, target_language, hf_token) -> Tuple[bool, str]:
         """Validar entradas do usuário"""
@@ -52,7 +55,7 @@ class OpenDubbingApp:
             
         # Verificar formato
         if not any(video_file.lower().endswith(fmt) for fmt in SUPPORTED_FORMATS):
-            return False, f"❌ Formato não suportado. Use: {', '.join(SUPPORTED_FORMATS)}"
+            return False, f"❌ Formato não suportado. Use: {", ".join(SUPPORTED_FORMATS)}"
             
         return True, "✅ Validação ok"
         
@@ -91,7 +94,8 @@ class OpenDubbingApp:
             if source_language != "auto":
                 cmd.extend(["--source_language", source_language])
                 
-            if use_gpu and torch.cuda.is_available():
+            # Usar a variável de ambiente SONITR_DEVICE para determinar o dispositivo
+            if os.environ.get("SONITR_DEVICE") == "cuda" and use_gpu:
                 cmd.extend(["--device", "cuda"])
             else:
                 cmd.extend(["--device", "cpu"])
@@ -345,3 +349,5 @@ if __name__ == "__main__":
         inbrowser=True,
         show_error=True
     )
+
+
